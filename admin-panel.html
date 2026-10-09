@@ -1,0 +1,2330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quizora Admin Panel</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+:root{
+    --primary:#4f46e5;
+    --primary-dark:#3730a3;
+    --bg:#f5f7fb;
+    --card:#ffffff;
+    --text:#172033;
+    --muted:#697386;
+    --border:#e7eaf0;
+    --success:#16a34a;
+    --danger:#dc2626;
+    --warning:#d97706;
+}
+
+body{
+    font-family:Inter,Arial,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+}
+
+button,input{
+    font:inherit;
+}
+
+.hidden{
+    display:none!important;
+}
+
+/* LOGIN */
+
+.login-page{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    background:
+        radial-gradient(circle at top left,#6366f1 0,transparent 35%),
+        radial-gradient(circle at bottom right,#818cf8 0,transparent 35%),
+        #eef0ff;
+}
+
+.login-card{
+    width:100%;
+    max-width:400px;
+    background:white;
+    border-radius:22px;
+    padding:32px;
+    box-shadow:0 25px 70px rgba(30,41,59,.15);
+}
+
+.logo{
+    width:52px;
+    height:52px;
+    border-radius:15px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:linear-gradient(135deg,#4f46e5,#7c3aed);
+    color:white;
+    font-size:24px;
+    font-weight:800;
+    margin-bottom:20px;
+}
+
+.login-card h1{
+    font-size:25px;
+    margin-bottom:7px;
+}
+
+.login-card p{
+    color:var(--muted);
+    font-size:14px;
+    margin-bottom:25px;
+}
+
+.form-group{
+    margin-bottom:16px;
+}
+
+.form-group label{
+    display:block;
+    font-size:13px;
+    font-weight:700;
+    margin-bottom:7px;
+}
+
+.form-group input{
+    width:100%;
+    padding:13px 14px;
+    border:1px solid var(--border);
+    border-radius:11px;
+    outline:none;
+}
+
+.form-group input:focus{
+    border-color:var(--primary);
+    box-shadow:0 0 0 3px rgba(79,70,229,.1);
+}
+
+.login-btn{
+    width:100%;
+    border:0;
+    padding:14px;
+    border-radius:11px;
+    color:white;
+    background:var(--primary);
+    font-weight:700;
+    cursor:pointer;
+}
+
+.login-btn:hover{
+    background:var(--primary-dark);
+}
+
+.login-error{
+    color:var(--danger);
+    background:#fef2f2;
+    border:1px solid #fecaca;
+    padding:10px 12px;
+    border-radius:9px;
+    font-size:13px;
+    margin-bottom:15px;
+}
+
+/* APP */
+
+.app{
+    min-height:100vh;
+    display:flex;
+}
+
+.sidebar{
+    width:245px;
+    background:#111827;
+    color:white;
+    padding:20px 14px;
+    position:fixed;
+    left:0;
+    top:0;
+    bottom:0;
+    z-index:20;
+}
+
+.brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:8px 10px 25px;
+    font-size:20px;
+    font-weight:800;
+}
+
+.brand-icon{
+    width:38px;
+    height:38px;
+    border-radius:11px;
+    background:linear-gradient(135deg,#6366f1,#8b5cf6);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.nav-title{
+    color:#6b7280;
+    font-size:10px;
+    font-weight:800;
+    letter-spacing:1px;
+    padding:10px;
+}
+
+.nav-btn{
+    width:100%;
+    display:flex;
+    align-items:center;
+    gap:11px;
+    background:transparent;
+    color:#cbd5e1;
+    border:0;
+    padding:12px;
+    border-radius:9px;
+    cursor:pointer;
+    margin-bottom:4px;
+    text-align:left;
+}
+
+.nav-btn:hover,
+.nav-btn.active{
+    background:#1f2937;
+    color:white;
+}
+
+.signout{
+    position:absolute;
+    left:14px;
+    right:14px;
+    bottom:18px;
+    color:#fca5a5;
+}
+
+.main{
+    margin-left:245px;
+    width:calc(100% - 245px);
+    min-width:0;
+}
+
+.topbar{
+    height:70px;
+    background:white;
+    border-bottom:1px solid var(--border);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 28px;
+    position:sticky;
+    top:0;
+    z-index:10;
+}
+
+.topbar h2{
+    font-size:20px;
+}
+
+.admin-badge{
+    font-size:12px;
+    color:#4f46e5;
+    background:#eef2ff;
+    padding:8px 11px;
+    border-radius:20px;
+    font-weight:700;
+}
+
+.content{
+    padding:25px;
+    max-width:1450px;
+    margin:auto;
+}
+
+/* STATS */
+
+.stats{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:15px;
+    margin-bottom:22px;
+}
+
+.stat{
+    background:white;
+    border:1px solid var(--border);
+    border-radius:15px;
+    padding:18px;
+}
+
+.stat-label{
+    font-size:12px;
+    color:var(--muted);
+    font-weight:600;
+}
+
+.stat-value{
+    font-size:27px;
+    font-weight:800;
+    margin-top:6px;
+}
+
+/* TOOLBAR */
+
+.toolbar{
+    background:white;
+    border:1px solid var(--border);
+    border-radius:15px;
+    padding:15px;
+    display:flex;
+    gap:10px;
+    align-items:center;
+    margin-bottom:15px;
+}
+
+.search{
+    flex:1;
+    min-width:180px;
+}
+
+.search input{
+    width:100%;
+    padding:11px 13px;
+    border:1px solid var(--border);
+    border-radius:9px;
+    outline:none;
+}
+
+.toolbar-btn{
+    border:1px solid var(--border);
+    background:white;
+    padding:10px 14px;
+    border-radius:9px;
+    cursor:pointer;
+    font-weight:600;
+}
+
+.toolbar-btn:hover{
+    background:#f8fafc;
+}
+
+.tabs{
+    display:flex;
+    gap:5px;
+    background:#f1f5f9;
+    padding:4px;
+    border-radius:9px;
+}
+
+.tab{
+    border:0;
+    padding:8px 12px;
+    border-radius:7px;
+    background:transparent;
+    cursor:pointer;
+    font-size:12px;
+    font-weight:700;
+}
+
+.tab.active{
+    background:white;
+    box-shadow:0 1px 3px rgba(0,0,0,.08);
+}
+
+/* TABLE */
+
+.table-card{
+    background:white;
+    border:1px solid var(--border);
+    border-radius:15px;
+    overflow:hidden;
+}
+
+.table-wrap{
+    overflow-x:auto;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th{
+    background:#f8fafc;
+    color:#64748b;
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:.4px;
+    padding:13px 16px;
+    text-align:left;
+    white-space:nowrap;
+}
+
+td{
+    padding:14px 16px;
+    border-top:1px solid var(--border);
+    font-size:13px;
+}
+
+.user-name{
+    font-weight:700;
+}
+
+.user-email{
+    color:var(--muted);
+    font-size:12px;
+    margin-top:3px;
+}
+
+.role{
+    display:inline-block;
+    padding:5px 8px;
+    border-radius:7px;
+    font-size:11px;
+    font-weight:700;
+}
+
+.role.creator{
+    background:#eef2ff;
+    color:#4338ca;
+}
+
+.role.student{
+    background:#ecfdf5;
+    color:#15803d;
+}
+
+.status{
+    display:inline-flex;
+    align-items:center;
+    gap:5px;
+    font-size:12px;
+    font-weight:700;
+}
+
+.status-dot{
+    width:7px;
+    height:7px;
+    border-radius:50%;
+    background:var(--success);
+}
+
+.status.disabled{
+    color:var(--danger);
+}
+
+.status.disabled .status-dot{
+    background:var(--danger);
+}
+
+.delete-btn{
+    border:0;
+    background:#fef2f2;
+    color:var(--danger);
+    padding:7px 10px;
+    border-radius:7px;
+    font-size:12px;
+    font-weight:700;
+    cursor:pointer;
+}
+
+.delete-btn:hover{
+    background:#fee2e2;
+}
+
+/* MOBILE CARDS */
+
+.mobile-users{
+    display:none;
+    padding:12px;
+}
+
+.user-card{
+    border:1px solid var(--border);
+    border-radius:13px;
+    padding:15px;
+    margin-bottom:10px;
+}
+
+.user-card-top{
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+}
+
+.user-card-name{
+    font-weight:800;
+}
+
+.user-card-email{
+    font-size:12px;
+    color:var(--muted);
+    margin-top:4px;
+    word-break:break-all;
+}
+
+.user-meta{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-top:15px;
+}
+
+.meta-label{
+    font-size:10px;
+    color:var(--muted);
+    text-transform:uppercase;
+}
+
+.meta-value{
+    font-size:12px;
+    font-weight:700;
+    margin-top:3px;
+}
+
+.mobile-delete{
+    margin-top:13px;
+    width:100%;
+}
+
+/* EMPTY / LOADING */
+
+.state{
+    padding:55px 20px;
+    text-align:center;
+    color:var(--muted);
+}
+
+.spinner{
+    width:30px;
+    height:30px;
+    border:3px solid #e5e7eb;
+    border-top-color:var(--primary);
+    border-radius:50%;
+    animation:spin .8s linear infinite;
+    margin:0 auto 13px;
+}
+
+@keyframes spin{
+    to{transform:rotate(360deg)}
+}
+
+.error-state{
+    color:var(--danger);
+}
+
+.error-state strong{
+    display:block;
+    margin-bottom:7px;
+    color:#991b1b;
+}
+
+/* MODAL */
+
+.modal-backdrop{
+    position:fixed;
+    inset:0;
+    background:rgba(15,23,42,.55);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    z-index:100;
+}
+
+.modal{
+    background:white;
+    width:100%;
+    max-width:400px;
+    border-radius:17px;
+    padding:25px;
+    box-shadow:0 25px 80px rgba(0,0,0,.2);
+}
+
+.modal h3{
+    margin-bottom:8px;
+}
+
+.modal p{
+    color:var(--muted);
+    font-size:13px;
+    line-height:1.6;
+}
+
+.modal-actions{
+    display:flex;
+    gap:9px;
+    margin-top:20px;
+}
+
+.modal-actions button{
+    flex:1;
+    padding:11px;
+    border-radius:9px;
+    cursor:pointer;
+    font-weight:700;
+}
+
+.profile-detail-modal{
+    max-width:820px;
+    padding:0;
+    overflow:hidden;
+}
+
+.profile-modal-header{
+    padding:24px 28px;
+    background:linear-gradient(135deg,#4f46e5 0%,#7c3aed 100%);
+    color:white;
+    display:flex;
+    align-items:center;
+    gap:16px;
+    position:relative;
+}
+
+.profile-modal-avatar{
+    width:56px;
+    height:56px;
+    border-radius:50%;
+    background:rgba(255,255,255,.25);
+    border:3px solid rgba(255,255,255,.4);
+    color:white;
+    display:grid;
+    place-items:center;
+    font-size:24px;
+    font-weight:800;
+    flex-shrink:0;
+}
+
+.profile-modal-header h3{
+    margin:0;
+    font-size:20px;
+    font-weight:700;
+}
+
+.modal-close-btn{
+    position:absolute;
+    right:20px;
+    top:50%;
+    transform:translateY(-50%);
+    width:36px;
+    height:36px;
+    border-radius:8px;
+    border:0;
+    background:rgba(255,255,255,.15);
+    color:white;
+    font-size:20px;
+    cursor:pointer;
+    display:grid;
+    place-items:center;
+    transition:.2s;
+}
+
+.modal-close-btn:hover{
+    background:rgba(255,255,255,.25);
+}
+
+.profile-detail-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:16px;
+    padding:24px 28px;
+}
+
+.detail-card{
+    background:#fafbfc;
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:18px;
+    transition:.2s;
+}
+
+.detail-card:hover{
+    border-color:#d1d5db;
+    box-shadow:0 2px 8px rgba(0,0,0,.05);
+}
+
+.detail-card-icon{
+    width:40px;
+    height:40px;
+    border-radius:10px;
+    display:grid;
+    place-items:center;
+    font-size:18px;
+    margin-bottom:12px;
+}
+
+.detail-card-label{
+    font-size:10px;
+    color:var(--muted);
+    font-weight:800;
+    text-transform:uppercase;
+    letter-spacing:.5px;
+    margin-bottom:8px;
+}
+
+.detail-card-value{
+    font-size:15px;
+    font-weight:700;
+    color:var(--text);
+    word-break:break-word;
+    line-height:1.4;
+}
+
+.detail-card.highlight{
+    background:linear-gradient(135deg,#f0f9ff 0%,#e0f2fe 100%);
+    border-color:#bae6fd;
+}
+
+.detail-card.highlight .detail-card-icon{
+    background:#0ea5e9;
+    color:white;
+}
+
+.detail-card.highlight .detail-card-value{
+    color:#0369a1;
+    font-size:28px;
+    font-weight:900;
+}
+
+@media(max-width:900px){
+    .profile-detail-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+}
+
+@media(max-width:600px){
+    .profile-detail-grid{
+        grid-template-columns:1fr;
+    }
+}
+
+.cancel-btn{
+    border:1px solid var(--border);
+    background:white;
+}
+
+.confirm-delete{
+    border:0;
+    background:var(--danger);
+    color:white;
+}
+
+/* TOAST */
+
+.toast{
+    position:fixed;
+    right:20px;
+    bottom:20px;
+    background:#111827;
+    color:white;
+    padding:13px 17px;
+    border-radius:10px;
+    font-size:13px;
+    box-shadow:0 10px 35px rgba(0,0,0,.2);
+    z-index:200;
+    max-width:360px;
+}
+
+.toast.success{
+    background:#166534;
+}
+
+.toast.error{
+    background:#991b1b;
+}
+
+/* MOBILE */
+
+.mobile-menu{
+    display:none;
+    border:0;
+    background:transparent;
+    font-size:22px;
+    cursor:pointer;
+}
+
+@media(max-width:900px){
+
+    .sidebar{
+        transform:translateX(-100%);
+        transition:.25s;
+    }
+
+    .sidebar.open{
+        transform:translateX(0);
+    }
+
+    .main{
+        margin-left:0;
+        width:100%;
+    }
+
+    .mobile-menu{
+        display:block;
+    }
+
+    .stats{
+        grid-template-columns:repeat(2,1fr);
+    }
+}
+
+@media(max-width:650px){
+
+    .topbar{
+        padding:0 15px;
+    }
+
+    .topbar h2{
+        font-size:17px;
+    }
+
+    .admin-badge{
+        display:none;
+    }
+
+    .content{
+        padding:14px;
+    }
+
+    .stats{
+        gap:9px;
+    }
+
+    .stat{
+        padding:14px;
+    }
+
+    .stat-value{
+        font-size:22px;
+    }
+
+    .toolbar{
+        flex-wrap:wrap;
+    }
+
+    .search{
+        flex-basis:100%;
+    }
+
+    .tabs{
+        width:100%;
+    }
+
+    .tab{
+        flex:1;
+    }
+
+    .table-wrap{
+        display:none;
+    }
+
+    .mobile-users{
+        display:block;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- LOGIN -->
+<section id="loginPage" class="login-page">
+
+    <div class="login-card">
+
+        <div class="logo">Q</div>
+
+        <h1>Admin Panel</h1>
+        <p>Sign in to manage Quizora users.</p>
+
+        <div id="loginError" class="login-error hidden"></div>
+
+        <div class="form-group">
+            <label>Admin Email</label>
+            <input
+                type="email"
+                id="adminEmail"
+                placeholder="Enter admin email"
+                autocomplete="username"
+            >
+        </div>
+
+        <div class="form-group">
+            <label>Password</label>
+            <input
+                type="password"
+                id="adminPassword"
+                placeholder="Enter password"
+                autocomplete="current-password"
+            >
+        </div>
+
+        <button class="login-btn" onclick="loginAdmin()">
+            Sign In
+        </button>
+
+    </div>
+
+</section>
+
+
+<!-- APP -->
+<section id="app" class="app hidden">
+
+    <aside id="sidebar" class="sidebar">
+
+        <div class="brand">
+            <div class="brand-icon">Q</div>
+            <span>Quizora</span>
+        </div>
+
+        <div class="nav-title">MANAGEMENT</div>
+
+        <button class="nav-btn active" onclick="setTab('all',this)">
+            👥
+            <span>All Users</span>
+        </button>
+
+        <button class="nav-btn" onclick="setTab('testCreator',this)">
+            🧑‍💼
+            <span>Test Creators</span>
+        </button>
+
+        <button class="nav-btn" onclick="setTab('student',this)">
+            🎓
+            <span>Students</span>
+        </button>
+
+        <button class="nav-btn signout" onclick="logoutAdmin()">
+            ↪
+            <span>Sign Out</span>
+        </button>
+
+    </aside>
+
+
+    <main class="main">
+
+        <header class="topbar">
+
+            <div style="display:flex;align-items:center;gap:12px;">
+                <button class="mobile-menu" onclick="toggleSidebar()">☰</button>
+                <h2 id="pageTitle">All Users</h2>
+            </div>
+
+            <div class="admin-badge">
+                Admin
+            </div>
+
+        </header>
+
+
+        <div class="content">
+
+            <!-- STATS -->
+            <div class="stats">
+
+                <div class="stat">
+                    <div class="stat-label">TEST CREATORS</div>
+                    <div id="creatorCount" class="stat-value">0</div>
+                </div>
+
+                <div class="stat">
+                    <div class="stat-label">STUDENTS</div>
+                    <div id="studentCount" class="stat-value">0</div>
+                </div>
+
+                <div class="stat">
+                    <div class="stat-label">TOTAL USERS</div>
+                    <div id="totalCount" class="stat-value">0</div>
+                </div>
+
+                <div class="stat">
+                    <div class="stat-label">ACTIVE USERS</div>
+                    <div id="activeCount" class="stat-value">0</div>
+                </div>
+
+            </div>
+
+
+            <!-- TOOLBAR -->
+            <div class="toolbar">
+
+                <div class="search">
+                    <input
+                        type="search"
+                        id="searchInput"
+                        placeholder="Search name or email..."
+                        oninput="renderUsers()"
+                    >
+                </div>
+
+                <div class="tabs">
+
+                    <button
+                        id="tab-all"
+                        class="tab active"
+                        onclick="changeFilter('all',this)"
+                    >
+                        All
+                    </button>
+
+                    <button
+                        id="tab-testCreator"
+                        class="tab"
+                        onclick="changeFilter('testCreator',this)"
+                    >
+                        Creators
+                    </button>
+
+                    <button
+                        id="tab-student"
+                        class="tab"
+                        onclick="changeFilter('student',this)"
+                    >
+                        Students
+                    </button>
+
+                </div>
+
+                <button class="toolbar-btn" onclick="loadUsers()">
+                    ↻ Refresh
+                </button>
+
+            </div>
+
+
+            <!-- USERS -->
+            <div class="table-card">
+
+                <div id="loadingState" class="state">
+                    <div class="spinner"></div>
+                    <div>Loading users...</div>
+                </div>
+
+                <div id="errorState" class="state error-state hidden">
+                    <strong>Unable to load users</strong>
+                    <span id="errorMessage"></span>
+                    <br>
+                    <button class="toolbar-btn" onclick="loadUsers()">
+                        Try Again
+                    </button>
+                </div>
+
+                <div id="emptyState" class="state hidden">
+                    No users found.
+                </div>
+
+                <div id="tableWrap" class="table-wrap hidden">
+
+                    <table>
+
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Role</th>
+                                <th id="studentIdCol" style="display:none">Student ID</th>
+                                <th id="collegeCol" style="display:none">College</th>
+                                <th id="phoneCol" style="display:none">Contact</th>
+                                <th id="orgTypeCol" style="display:none">Type</th>
+                                <th id="orgNameCol" style="display:none">Organization</th>
+                                <th id="creatorPhoneCol" style="display:none">Contact</th>
+                                <th>Created</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="userTableBody"></tbody>
+
+                    </table>
+
+                </div>
+
+
+                <div id="mobileUsers" class="mobile-users"></div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+</section>
+
+
+<!-- DELETE MODAL -->
+<div id="deleteModal" class="modal-backdrop hidden">
+
+    <div class="modal">
+
+        <h3>Delete User?</h3>
+
+        <p id="deleteMessage">
+            This will permanently delete the Firebase Authentication account and Firestore user profile.
+        </p>
+
+        <div class="modal-actions">
+
+            <button
+                class="cancel-btn"
+                onclick="closeDeleteModal()"
+            >
+                Cancel
+            </button>
+
+            <button
+                id="confirmDeleteBtn"
+                class="confirm-delete"
+                onclick="confirmDelete()"
+            >
+                Delete
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- STUDENT DETAILS MODAL -->
+<div id="studentDetailsModal" class="modal-backdrop hidden">
+
+    <div class="modal profile-detail-modal">
+
+        <div class="profile-modal-header">
+            <div class="profile-modal-avatar" id="studentAvatar">S</div>
+            <div>
+                <h3 id="studentModalName">Student Profile</h3>
+                <p id="studentModalEmail" style="font-size:13px;color:var(--muted);margin:4px 0 0">email@example.com</p>
+            </div>
+            <button class="modal-close-btn" onclick="closeStudentDetailsModal()">✕</button>
+        </div>
+
+        <div id="studentDetailsContent" class="profile-detail-grid">
+        </div>
+
+        <div class="modal-actions" style="margin-top:0;padding-top:20px;border-top:1px solid var(--border)">
+            <button class="cancel-btn" onclick="closeStudentDetailsModal()">Close</button>
+        </div>
+
+    </div>
+
+</div>
+
+
+<div id="toast" class="toast hidden"></div>
+
+
+<script>
+
+/* =========================================================
+   ADMIN SETTINGS
+========================================================= */
+
+const ADMIN_EMAIL = "muthukrishnan@gmail.com";
+const ADMIN_PASSWORD = "3443";
+
+/*
+IMPORTANT:
+Replace this with your deployed Firebase Function URL.
+
+Example:
+https://adminapi-xxxxx-uc.a.run.app
+*/
+const ADMIN_API_URL =
+    "PASTE_YOUR_FIREBASE_FUNCTION_URL_HERE";
+
+const API_BASE_URL = 'https://yh5j21oonb.execute-api.eu-north-1.amazonaws.com/prod';
+
+
+/* =========================================================
+   STATE
+========================================================= */
+
+let users = [];
+let studentProfiles = [];
+let currentFilter = "all";
+let deleteUserId = null;
+
+
+/* =========================================================
+   LOGIN
+========================================================= */
+
+function loginAdmin(){
+
+    const email =
+        document.getElementById("adminEmail").value.trim();
+
+    const password =
+        document.getElementById("adminPassword").value;
+
+    const error =
+        document.getElementById("loginError");
+
+    error.classList.add("hidden");
+
+    if(
+        email !== ADMIN_EMAIL ||
+        password !== ADMIN_PASSWORD
+    ){
+
+        error.textContent =
+            "Invalid admin email or password.";
+
+        error.classList.remove("hidden");
+
+        return;
+    }
+
+    sessionStorage.setItem(
+        "quizoraAdminLoggedIn",
+        "true"
+    );
+
+    showApp();
+}
+
+
+function logoutAdmin(){
+
+    sessionStorage.removeItem(
+        "quizoraAdminLoggedIn"
+    );
+
+    location.reload();
+}
+
+
+function showApp(){
+
+    document
+        .getElementById("loginPage")
+        .classList.add("hidden");
+
+    document
+        .getElementById("app")
+        .classList.remove("hidden");
+
+    loadUsers();
+}
+
+
+/* =========================================================
+   LOAD USERS
+========================================================= */
+
+async function loadUsers(){
+
+    showLoading();
+
+    try{
+
+        // Load students and creators from DynamoDB
+        const [studentsRes, creatorsRes] = await Promise.all([
+            fetch(`${API_BASE_URL}/students/all`),
+            fetch(`${API_BASE_URL}/creators/all`)
+        ]);
+
+        console.log('Load response status:', studentsRes.status, creatorsRes.status);
+
+        const studentsData = studentsRes.ok ? await studentsRes.json() : { success: false, students: [] };
+        const creatorsData = creatorsRes.ok ? await creatorsRes.json() : { success: false, creators: [] };
+
+        console.log('Data received:', studentsData, creatorsData);
+
+        // Convert students to user format
+        const students = Array.isArray(studentsData.students) ? studentsData.students.map(student => ({
+            uid: student.studentId || student.uid || 'unknown',
+            name: student.name || student.studentName || 'Unnamed Student',
+            email: student.email || student.studentEmail || '',
+            role: 'student',
+            rollNumber: student.rollNumber || student.regNo || '-',
+            collegeName: student.collegeName || '-',
+            phone: student.phone || '-',
+            profileComplete: student.profileComplete || false,
+            createdAt: student.createdAt || new Date().toISOString(),
+            disabled: false
+        })) : [];
+
+        // Convert creators to user format
+        const creators = Array.isArray(creatorsData.creators) ? creatorsData.creators.map(creator => ({
+            uid: creator.creatorId || creator.uid || 'unknown',
+            name: creator.name || creator.creatorName || 'Unnamed Creator',
+            email: creator.email || creator.creatorEmail || '',
+            role: 'testCreator',
+            orgType: creator.orgType || '-',
+            orgName: creator.orgName || '-',
+            phone: creator.phone || '-',
+            studentCount: creator.studentCount || '-',
+            profileComplete: creator.profileComplete || false,
+            createdAt: creator.createdAt || new Date().toISOString(),
+            disabled: false
+        })) : [];
+
+        // Merge both arrays
+        users = [...students, ...creators];
+
+        console.log('Total users loaded:', users.length);
+        console.log('Users array:', users);
+
+        updateStats();
+
+        renderUsers();
+
+    }
+    catch(error){
+
+        console.error(
+            "LOAD USERS ERROR:",
+            error
+        );
+
+        showError(
+            error.message ||
+            "Could not load user data."
+        );
+    }
+}
+
+
+/* =========================================================
+   LOAD STUDENT PROFILES
+========================================================= */
+
+async function loadStudentProfiles(){
+    try{
+        const response = await fetch(`${API_BASE_URL}/students/all`);
+
+        if(!response.ok){
+            console.warn('Could not load student profiles');
+            return;
+        }
+
+        const data = await response.json();
+
+        if(data.success && Array.isArray(data.students)){
+            studentProfiles = data.students;
+
+            // Merge student profiles with users
+            users = users.map(user => {
+                const profile = studentProfiles.find(p =>
+                    p.email === user.email || p.studentEmail === user.email
+                );
+
+                if(profile && user.role === 'student'){
+                    return {
+                        ...user,
+                        rollNumber: profile.rollNumber || profile.regNo || '-',
+                        collegeName: profile.collegeName || '-',
+                        phone: profile.phone || '-',
+                        profileComplete: profile.profileComplete || false
+                    };
+                }
+
+                return user;
+            });
+        }
+    }
+    catch(error){
+        console.error('Error loading student profiles:', error);
+    }
+}
+
+
+/* =========================================================
+   FILTER
+========================================================= */
+
+function changeFilter(filter,button){
+
+    currentFilter = filter;
+
+    document
+        .querySelectorAll(".tab")
+        .forEach(el =>
+            el.classList.remove("active")
+        );
+
+    button.classList.add("active");
+
+    renderUsers();
+}
+
+
+function setTab(filter,button){
+
+    currentFilter = filter;
+
+    document
+        .querySelectorAll(".nav-btn")
+        .forEach(el =>
+            el.classList.remove("active")
+        );
+
+    button.classList.add("active");
+
+    document
+        .querySelectorAll(".tab")
+        .forEach(el =>
+            el.classList.remove("active")
+        );
+
+    const tab =
+        document.getElementById(
+            "tab-" + filter
+        );
+
+    if(tab){
+        tab.classList.add("active");
+    }
+
+    document.getElementById("pageTitle").textContent =
+        filter === "all"
+            ? "All Users"
+            : filter === "student"
+                ? "Students"
+                : "Test Creators";
+
+    renderUsers();
+
+    if(window.innerWidth <= 900){
+        toggleSidebar();
+    }
+}
+
+
+/* =========================================================
+   RENDER
+========================================================= */
+
+function renderUsers(){
+
+    console.log('renderUsers called, total users:', users.length, 'currentFilter:', currentFilter);
+
+    const search =
+        document
+            .getElementById("searchInput")
+            .value
+            .trim()
+            .toLowerCase();
+
+
+    let filtered =
+        users.filter(user => {
+
+            const roleMatch =
+                currentFilter === "all" ||
+                user.role === currentFilter;
+
+            const text =
+                (
+                    user.name ||
+                    ""
+                ).toLowerCase()
+                + " "
+                +
+                (
+                    user.email ||
+                    ""
+                ).toLowerCase();
+
+            return roleMatch &&
+                   text.includes(search);
+        });
+
+    console.log('Filtered users:', filtered.length);
+
+
+    document
+        .getElementById("loadingState")
+        .classList.add("hidden");
+
+    document
+        .getElementById("errorState")
+        .classList.add("hidden");
+
+
+    if(filtered.length === 0){
+
+        document
+            .getElementById("tableWrap")
+            .classList.add("hidden");
+
+        document
+            .getElementById("mobileUsers")
+            .classList.add("hidden");
+
+        document
+            .getElementById("emptyState")
+            .classList.remove("hidden");
+
+        return;
+    }
+
+
+    document
+        .getElementById("emptyState")
+        .classList.add("hidden");
+
+    document
+        .getElementById("tableWrap")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("mobileUsers")
+        .classList.remove("hidden");
+
+    // Show/hide student columns based on filter
+    try{
+        const showStudentCols = currentFilter === "student" || currentFilter === "all";
+        const showCreatorCols = currentFilter === "testCreator" || currentFilter === "all";
+
+        const studentIdCol = document.getElementById("studentIdCol");
+        const collegeCol = document.getElementById("collegeCol");
+        const phoneCol = document.getElementById("phoneCol");
+        const orgTypeCol = document.getElementById("orgTypeCol");
+        const orgNameCol = document.getElementById("orgNameCol");
+        const creatorPhoneCol = document.getElementById("creatorPhoneCol");
+
+        if(studentIdCol) studentIdCol.style.display = showStudentCols ? "" : "none";
+        if(collegeCol) collegeCol.style.display = showStudentCols ? "" : "none";
+        if(phoneCol) phoneCol.style.display = showStudentCols ? "" : "none";
+        if(orgTypeCol) orgTypeCol.style.display = showCreatorCols ? "" : "none";
+        if(orgNameCol) orgNameCol.style.display = showCreatorCols ? "" : "none";
+        if(creatorPhoneCol) creatorPhoneCol.style.display = showCreatorCols ? "" : "none";
+    }catch(e){
+        console.error('Error showing/hiding columns:', e);
+    }
+
+    const tbody =
+        document.getElementById(
+            "userTableBody"
+        );
+
+    if(!tbody){
+        console.error('userTableBody not found!');
+        return;
+    }
+
+    tbody.innerHTML = "";
+
+    console.log('Rendering', filtered.length, 'users to table');
+
+    filtered.forEach(user => {
+        console.log('Rendering user:', user.name, user.role);
+
+        const tr =
+            document.createElement("tr");
+
+        const roleClass =
+            user.role === "student"
+                ? "student"
+                : "creator";
+
+        const roleName =
+            user.role === "student"
+                ? "Student"
+                : "Test Creator";
+
+        const status =
+            user.disabled
+                ? "Disabled"
+                : "Active";
+
+        tr.innerHTML = `
+
+            <td>
+
+                <div class="user-name">
+                    ${escapeHTML(user.name || "Unnamed User")}
+                </div>
+
+                <div class="user-email">
+                    ${escapeHTML(user.email || "-")}
+                </div>
+
+            </td>
+
+            <td>
+                <span class="role ${roleClass}">
+                    ${roleName}
+                </span>
+            </td>
+
+            <td style="display:${currentFilter === 'student' || currentFilter === 'all' ? '' : 'none'}">
+                ${escapeHTML(user.rollNumber || '-')}
+            </td>
+            <td style="display:${currentFilter === 'student' || currentFilter === 'all' ? '' : 'none'}">
+                ${escapeHTML(user.collegeName || '-')}
+            </td>
+            <td style="display:${currentFilter === 'student' || currentFilter === 'all' ? '' : 'none'}">
+                ${escapeHTML(user.phone || '-')}
+            </td>
+
+            <td style="display:${currentFilter === 'testCreator' || currentFilter === 'all' ? '' : 'none'}">
+                ${escapeHTML(user.orgType || '-')}
+            </td>
+            <td style="display:${currentFilter === 'testCreator' || currentFilter === 'all' ? '' : 'none'}">
+                ${escapeHTML(user.orgName || '-')}
+            </td>
+            <td style="display:${currentFilter === 'testCreator' || currentFilter === 'all' ? '' : 'none'}">
+                ${escapeHTML(user.phone || '-')}
+            </td>
+
+            <td>
+                ${formatDate(user.createdAt)}
+            </td>
+
+            <td>
+
+                <span class="status ${user.disabled ? "disabled" : ""}">
+
+                    <span class="status-dot"></span>
+
+                    ${status}
+
+                </span>
+
+            </td>
+
+            <td>
+
+                ${user.role === 'student' ? `
+                    <button
+                        class="delete-btn"
+                        style="background:#e0f2fe;color:#0369a1;margin-right:8px"
+                        onclick="viewStudentDetails('${user.uid}')"
+                    >
+                        View Details
+                    </button>
+                ` : user.role === 'testCreator' ? `
+                    <button
+                        class="delete-btn"
+                        style="background:#fef3c7;color:#92400e;margin-right:8px"
+                        onclick="viewCreatorDetails('${user.uid}')"
+                    >
+                        View Details
+                    </button>
+                ` : ''}
+                <button
+                    class="delete-btn"
+                    onclick="openDeleteModal('${user.uid}')"
+                >
+                    Delete
+                </button>
+
+            </td>
+        `;
+
+        try{
+            tbody.appendChild(tr);
+        }catch(e){
+            console.error('Failed to append row for user:', user.name, e);
+        }
+
+    });
+
+    console.log('Table rendering complete. tbody has', tbody.children.length, 'rows');
+
+    renderMobile(filtered);
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+function renderMobile(list){
+
+    const container =
+        document.getElementById(
+            "mobileUsers"
+        );
+
+    if(!container){
+        console.error('mobileUsers container not found!');
+        return;
+    }
+
+    container.innerHTML = "";
+
+    console.log('Rendering mobile cards for', list.length, 'users');
+
+    list.forEach(user => {
+
+        const card =
+            document.createElement("div");
+
+        card.className = "user-card";
+
+        const roleName =
+            user.role === "student"
+                ? "Student"
+                : "Test Creator";
+
+        // Build details section based on role
+        let detailsHtml = '';
+        if(user.role === 'student'){
+            detailsHtml = `
+                ${user.rollNumber ? `<div><div class="meta-label">Roll Number</div><div class="meta-value">${escapeHTML(user.rollNumber)}</div></div>` : ''}
+                ${user.collegeName ? `<div><div class="meta-label">College</div><div class="meta-value">${escapeHTML(user.collegeName)}</div></div>` : ''}
+            `;
+        } else if(user.role === 'testCreator'){
+            detailsHtml = `
+                ${user.orgType ? `<div><div class="meta-label">Type</div><div class="meta-value">${escapeHTML(user.orgType)}</div></div>` : ''}
+                ${user.orgName ? `<div><div class="meta-label">Organization</div><div class="meta-value">${escapeHTML(user.orgName)}</div></div>` : ''}
+            `;
+        }
+
+        card.innerHTML = `
+
+            <div class="user-card-top">
+
+                <div>
+
+                    <div class="user-card-name">
+                        ${escapeHTML(user.name || "Unnamed User")}
+                    </div>
+
+                    <div class="user-card-email">
+                        ${escapeHTML(user.email || "-")}
+                    </div>
+
+                </div>
+
+                <span class="role ${
+                    user.role === "student"
+                        ? "student"
+                        : "creator"
+                }">
+                    ${roleName}
+                </span>
+
+            </div>
+
+
+            <div class="user-meta">
+
+                ${detailsHtml}
+
+                <div>
+
+                    <div class="meta-label">
+                        Created
+                    </div>
+
+                    <div class="meta-value">
+                        ${formatDate(user.createdAt)}
+                    </div>
+
+                </div>
+
+
+                <div>
+
+                    <div class="meta-label">
+                        Status
+                    </div>
+
+                    <div class="meta-value">
+                        ${user.disabled ? "Disabled" : "Active"}
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div style="display:flex;gap:8px;margin-top:12px">
+                ${user.role === 'student' ? `
+                    <button
+                        class="delete-btn"
+                        style="flex:1;background:#e0f2fe;color:#0369a1"
+                        onclick="viewStudentDetails('${user.uid}')"
+                    >
+                        View Details
+                    </button>
+                ` : user.role === 'testCreator' ? `
+                    <button
+                        class="delete-btn"
+                        style="flex:1;background:#fef3c7;color:#92400e"
+                        onclick="viewCreatorDetails('${user.uid}')"
+                    >
+                        View Details
+                    </button>
+                ` : ''}
+                <button
+                    class="delete-btn mobile-delete"
+                    style="flex:1"
+                    onclick="openDeleteModal('${user.uid}')"
+                >
+                    Delete
+                </button>
+            </div>
+        `;
+
+        container.appendChild(card);
+
+    });
+}
+
+
+/* =========================================================
+   STATS
+========================================================= */
+
+function updateStats(){
+
+    const creators =
+        users.filter(
+            u => u.role === "testCreator"
+        ).length;
+
+    const students =
+        users.filter(
+            u => u.role === "student"
+        ).length;
+
+    const active =
+        users.filter(
+            u => !u.disabled
+        ).length;
+
+
+    document.getElementById(
+        "creatorCount"
+    ).textContent = creators;
+
+    document.getElementById(
+        "studentCount"
+    ).textContent = students;
+
+    document.getElementById(
+        "totalCount"
+    ).textContent = users.length;
+
+    document.getElementById(
+        "activeCount"
+    ).textContent = active;
+}
+
+
+/* =========================================================
+   DELETE
+========================================================= */
+
+function openDeleteModal(uid){
+
+    const user =
+        users.find(
+            u => u.uid === uid
+        );
+
+    if(!user) return;
+
+    deleteUserId = uid;
+
+    document.getElementById(
+        "deleteMessage"
+    ).textContent =
+        `Delete ${user.name || user.email}? This will permanently remove the Firebase Authentication account and Firestore profile.`;
+
+    document
+        .getElementById("deleteModal")
+        .classList.remove("hidden");
+}
+
+
+function closeDeleteModal(){
+
+    deleteUserId = null;
+
+    document
+        .getElementById("deleteModal")
+        .classList.add("hidden");
+}
+
+
+async function confirmDelete(){
+
+    if(!deleteUserId) return;
+
+    const uid =
+        deleteUserId;
+
+    const button =
+        document.getElementById(
+            "confirmDeleteBtn"
+        );
+
+    button.disabled = true;
+    button.textContent = "Deleting...";
+
+
+    try{
+
+        const response =
+            await fetch(
+                ADMIN_API_URL,
+                {
+                    method:"POST",
+
+                    headers:{
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:JSON.stringify({
+
+                        action:"delete",
+
+                        uid:uid,
+
+                        adminEmail:
+                            ADMIN_EMAIL,
+
+                        adminPassword:
+                            ADMIN_PASSWORD
+
+                    })
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if(!response.ok ||
+           !data.success){
+
+            throw new Error(
+                data.error ||
+                "Delete failed."
+            );
+        }
+
+
+        // Also delete from DynamoDB tables
+        const user = users.find(u => u.uid === uid);
+        if(user && user.role === 'student'){
+            try{
+                await fetch(`${API_BASE_URL}/students/${uid}`, {
+                    method: 'DELETE'
+                });
+            }
+            catch(e){
+                console.warn('Could not delete student profile:', e);
+            }
+        }
+        else if(user && user.role === 'testCreator'){
+            try{
+                await fetch(`${API_BASE_URL}/creators/${uid}`, {
+                    method: 'DELETE'
+                });
+            }
+            catch(e){
+                console.warn('Could not delete creator profile:', e);
+            }
+        }
+
+        users =
+            users.filter(
+                u => u.uid !== uid
+            );
+
+        updateStats();
+
+        renderUsers();
+
+        closeDeleteModal();
+
+        showToast(
+            "User deleted successfully.",
+            "success"
+        );
+
+    }
+    catch(error){
+
+        console.error(
+            "DELETE ERROR:",
+            error
+        );
+
+        showToast(
+            error.message ||
+            "Could not delete user.",
+            "error"
+        );
+
+    }
+    finally{
+
+        button.disabled = false;
+        button.textContent = "Delete";
+
+    }
+}
+
+
+/* =========================================================
+   STUDENT DETAILS
+========================================================= */
+
+async function viewStudentDetails(uid){
+
+    const student = users.find(u => u.uid === uid);
+
+    if(!student){
+        showToast("Student not found.", "error");
+        return;
+    }
+
+    // Update header
+    const firstName = (student.name || 'Student').split(' ')[0];
+    document.getElementById('studentAvatar').textContent = firstName.charAt(0).toUpperCase();
+    document.getElementById('studentModalName').textContent = student.name || 'Student Profile';
+    document.getElementById('studentModalEmail').textContent = student.email || 'No email';
+
+    // Show modal with loading state
+    document.getElementById('studentDetailsContent').innerHTML = `
+        <div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--muted)">
+            <div style="font-size:14px">Loading details...</div>
+        </div>
+    `;
+    document.getElementById('studentDetailsModal').classList.remove('hidden');
+
+    // Fetch test attendance count
+    let testCount = 0;
+    try{
+        const resultsRes = await fetch(`${API_BASE_URL}/results?studentEmail=${encodeURIComponent(student.email)}`);
+        if(resultsRes.ok){
+            const resultsData = await resultsRes.json();
+            testCount = resultsData.results ? resultsData.results.length : 0;
+        }
+    }catch(e){
+        console.error('Failed to fetch test count:', e);
+    }
+
+    const content = `
+        <div class="detail-card">
+            <div class="detail-card-icon" style="background:#ede9fe;color:#7c3aed">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            </div>
+            <div class="detail-card-label">Full Name</div>
+            <div class="detail-card-value">${escapeHTML(student.name || 'Not provided')}</div>
+        </div>
+
+        <div class="detail-card">
+            <div class="detail-card-icon" style="background:#fef3c7;color:#d97706">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+            </div>
+            <div class="detail-card-label">Email Address</div>
+            <div class="detail-card-value" style="font-size:13px">${escapeHTML(student.email || 'Not provided')}</div>
+        </div>
+
+        <div class="detail-card">
+            <div class="detail-card-icon" style="background:#dbeafe;color:#2563eb">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+            </div>
+            <div class="detail-card-label">Account Created</div>
+            <div class="detail-card-value" style="font-size:13px">${formatDate(student.createdAt)}</div>
+        </div>
+
+        <div class="detail-card">
+            <div class="detail-card-icon" style="background:#e0f2fe;color:#0284c7">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+            </div>
+            <div class="detail-card-label">Roll Number</div>
+            <div class="detail-card-value">${escapeHTML(student.rollNumber || 'Not provided')}</div>
+        </div>
+
+        <div class="detail-card">
+            <div class="detail-card-icon" style="background:#dcfce7;color:#16a34a">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+            </div>
+            <div class="detail-card-label">College</div>
+            <div class="detail-card-value" style="font-size:13px">${escapeHTML(student.collegeName || 'Not provided')}</div>
+        </div>
+
+        <div class="detail-card">
+            <div class="detail-card-icon" style="background:#fee2e2;color:#dc2626">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+            </div>
+            <div class="detail-card-label">Phone Number</div>
+            <div class="detail-card-value">${escapeHTML(student.phone || 'Not provided')}</div>
+        </div>
+
+        <div class="detail-card highlight">
+            <div class="detail-card-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+            </div>
+            <div class="detail-card-label">Tests Attended</div>
+            <div class="detail-card-value">${testCount}</div>
+        </div>
+
+        <div class="detail-card" style="background:${student.profileComplete ? '#f0fdf4' : '#fef3c7'};border-color:${student.profileComplete ? '#86efac' : '#fcd34d'}">
+            <div class="detail-card-icon" style="background:${student.profileComplete ? '#16a34a' : '#d97706'};color:white">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">${student.profileComplete ? '<polyline points="20 6 9 17 4 12"></polyline>' : '<path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line>'}</svg>
+            </div>
+            <div class="detail-card-label">Profile Status</div>
+            <div class="detail-card-value" style="color:${student.profileComplete ? '#16a34a' : '#d97706'}">${student.profileComplete ? '✓ Complete' : '⚠ Incomplete'}</div>
+        </div>
+    `;
+
+    document.getElementById('studentDetailsContent').innerHTML = content;
+}
+
+function closeStudentDetailsModal(){
+
+    document
+        .getElementById('studentDetailsModal')
+        .classList.add('hidden');
+}
+
+
+/* =========================================================
+   CREATOR DETAILS
+========================================================= */
+
+function viewCreatorDetails(uid){
+
+    const creator = users.find(u => u.uid === uid);
+
+    if(!creator){
+        showToast("Creator not found.", "error");
+        return;
+    }
+
+    // Update header
+    const firstName = (creator.name || 'Creator').split(' ')[0];
+    document.getElementById('studentAvatar').textContent = firstName.charAt(0).toUpperCase();
+    document.getElementById('studentModalName').textContent = creator.name || 'Test Creator Profile';
+    document.getElementById('studentModalEmail').textContent = creator.email || 'No email';
+
+    const content = `
+        <div class="detail-card">
+            <div class="detail-card-icon" style="background:#ede9fe;color:#7c3aed">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            </div>
+            <div class="detail-card-label">Full Name</div>
+            <div class="detail-card-value">${escapeHTML(creator.name || 'Not provided')}</div>
+        </div>
+
+        <div class="detail-card">
+            <div class="detail-card-icon" style="background:#fef3c7;color:#d97706">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+            </div>
+            <div class="detail-card-label">Email Address</div>
+            <div class="detail-card-value" style="font-size:13px">${escapeHTML(creator.email || 'Not provided')}</div>
+        </div>
+
+        <div class="detail-card">
+            <div class="detail-card-icon" style="background:#dbeafe;color:#2563eb">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+            </div>
+            <div class="detail-card-label">Account Created</div>
+            <div class="detail-card-value" style="font-size:13px">${formatDate(creator.createdAt)}</div>
+        </div>
+
+        <div class="detail-card">
+            <div class="detail-card-icon" style="background:#fef3c7;color:#f59e0b">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+            </div>
+            <div class="detail-card-label">Organization Type</div>
+            <div class="detail-card-value">${escapeHTML(creator.orgType || 'Not provided')}</div>
+        </div>
+
+        <div class="detail-card">
+            <div class="detail-card-icon" style="background:#dcfce7;color:#16a34a">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+            </div>
+            <div class="detail-card-label">Organization Name</div>
+            <div class="detail-card-value" style="font-size:13px">${escapeHTML(creator.orgName || 'Not provided')}</div>
+        </div>
+
+        <div class="detail-card">
+            <div class="detail-card-icon" style="background:#fee2e2;color:#dc2626">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+            </div>
+            <div class="detail-card-label">Phone Number</div>
+            <div class="detail-card-value">${escapeHTML(creator.phone || 'Not provided')}</div>
+        </div>
+
+        <div class="detail-card highlight">
+            <div class="detail-card-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            </div>
+            <div class="detail-card-label">Student Count</div>
+            <div class="detail-card-value">${escapeHTML(creator.studentCount || 'Not specified')}</div>
+        </div>
+
+        <div class="detail-card" style="background:${creator.profileComplete ? '#f0fdf4' : '#fef3c7'};border-color:${creator.profileComplete ? '#86efac' : '#fcd34d'}">
+            <div class="detail-card-icon" style="background:${creator.profileComplete ? '#16a34a' : '#d97706'};color:white">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">${creator.profileComplete ? '<polyline points="20 6 9 17 4 12"></polyline>' : '<path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line>'}</svg>
+            </div>
+            <div class="detail-card-label">Profile Status</div>
+            <div class="detail-card-value" style="color:${creator.profileComplete ? '#16a34a' : '#d97706'}">${creator.profileComplete ? '✓ Complete' : '⚠ Incomplete'}</div>
+        </div>
+    `;
+
+    document.getElementById('studentDetailsContent').innerHTML = content;
+
+    document
+        .getElementById('studentDetailsModal')
+        .classList.remove('hidden');
+}
+
+function closeCreatorDetailsModal(){
+
+    document
+        .getElementById('studentDetailsModal')
+        .classList.add('hidden');
+}
+
+
+/* =========================================================
+   UI
+========================================================= */
+
+function showLoading(){
+
+    document
+        .getElementById("loadingState")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("errorState")
+        .classList.add("hidden");
+
+    document
+        .getElementById("emptyState")
+        .classList.add("hidden");
+
+    document
+        .getElementById("tableWrap")
+        .classList.add("hidden");
+
+    document
+        .getElementById("mobileUsers")
+        .classList.add("hidden");
+}
+
+
+function showError(message){
+
+    document
+        .getElementById("loadingState")
+        .classList.add("hidden");
+
+    document
+        .getElementById("tableWrap")
+        .classList.add("hidden");
+
+    document
+        .getElementById("mobileUsers")
+        .classList.add("hidden");
+
+    document
+        .getElementById("emptyState")
+        .classList.add("hidden");
+
+    document
+        .getElementById("errorState")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("errorMessage")
+        .textContent = message;
+}
+
+
+function showToast(message,type=""){
+
+    const toast =
+        document.getElementById("toast");
+
+    toast.textContent = message;
+
+    toast.className =
+        "toast " + type;
+
+    toast.classList.remove("hidden");
+
+    setTimeout(() => {
+
+        toast.classList.add("hidden");
+
+    },4000);
+}
+
+
+function toggleSidebar(){
+
+    document
+        .getElementById("sidebar")
+        .classList.toggle("open");
+}
+
+
+function formatDate(value){
+
+    if(!value) return "-";
+
+    const date =
+        new Date(value);
+
+    if(isNaN(date.getTime()))
+        return "-";
+
+    return date.toLocaleDateString(
+        "en-IN",
+        {
+            day:"2-digit",
+            month:"short",
+            year:"numeric"
+        }
+    );
+}
+
+
+function escapeHTML(value){
+
+    return String(value)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+}
+
+
+/* =========================================================
+   SESSION
+========================================================= */
+
+if(
+    sessionStorage.getItem(
+        "quizoraAdminLoggedIn"
+    ) === "true"
+){
+
+    showApp();
+
+}
+
+</script>
+
+</body>
+</html>
